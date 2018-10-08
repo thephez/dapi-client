@@ -1,4 +1,4 @@
-<h1 align="center">DAPI-SDK V.1.1.0</h1>
+<h1 align="center">DAPI-CLIENT V.1.1.0</h1>
 
 <div align="center">
   <strong>A Dash Library to work with the DAPI on a Javascript landscape.</strong>
@@ -12,12 +12,12 @@
       alt="API stability" />
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.com/dashevo/dapi-sdk">
-    <img src="https://img.shields.io/travis/dashevo/dapi-sdk/master.svg?style=flat-square" alt="Build Status" />
+  <a href="https://travis-ci.com/dashevo/dapi-client">
+    <img src="https://img.shields.io/travis/dashevo/dapi-client/master.svg?style=flat-square" alt="Build Status" />
   </a>
   <!-- NPM version -->
-  <a href="https://npmjs.org/package/dapi-sdk">
-    <img src="https://img.shields.io/npm/v/dapi-sdk.svg?style=flat-square" alt="NPM version" />
+  <a href="https://npmjs.org/package/dapi-client">
+    <img src="https://img.shields.io/npm/v/dapi-client.svg?style=flat-square" alt="NPM version" />
   </a>
 </div>
 
@@ -46,8 +46,8 @@ This package requires the use of Node >= 8.0.0 and is broadly compatible with mo
 
 ## Getting Started
 ### Install DAPI-SDK
-* npm : `npm i -S @dashevo/dapi-sdk`
-* github : `npm i -S github:dashevo/dapi-sdk`
+* npm : `npm i -S @dashevo/dapi-client`
+* github : `npm i -S github:dashevo/dapi-client`
 
 ### Uses : 
 
