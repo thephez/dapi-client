@@ -17,6 +17,7 @@ class DAPIClient {
     this.MNDiscovery = new MNDiscovery(options.seeds, options.port);
     this.DAPIPort = options.port || config.Api.port;
     this.timeout = options.timeout || 2000;
+    this.excludedIps = options.excludedIps;
     preconditionsUtil.checkArgument(jsutil.isUnsignedInteger(this.timeout),
       'Expect timeout to be an unsigned integer');
     this.retries = options.retries ? options.retries : 3;
@@ -126,27 +127,27 @@ class DAPIClient {
    * Returns block hash of chaintip
    * @returns {Promise<string>}
    */
-  getBestBlockHash() { return this.makeRequestToRandomDAPINode('getBestBlockHash', {}); }
+  getBestBlockHash() { return this.makeRequestToRandomDAPINode('getBestBlockHash', {}, this.excludedIps); }
 
   /**
    * Returns best block height
    * @returns {Promise<number>}
    */
-  getBestBlockHeight() { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}); }
+  getBestBlockHeight() { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}, this.excludedIps); }
 
   /**
    * Returns block hash for the given height
    * @param {number} height
    * @returns {Promise<string>} - block hash
    */
-  getBlockHash(height) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }); }
+  getBlockHash(height) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }, this.excludedIps); }
 
   /**
    * Returns block header by hash
    * @param {string} blockHash
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeader(blockHash) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }); }
+  getBlockHeader(blockHash) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }, this.excludedIps); }
 
   /**
    * Returns block headers from [offset] with length [limit], where limit is <= 25
@@ -154,7 +155,7 @@ class DAPIClient {
    * @param {number} limit
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeaders(offset, limit) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }); }
+  getBlockHeaders(offset, limit) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }, this.excludedIps); }
 
   // TODO: Do we really need it this way?
   /**
