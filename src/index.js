@@ -18,7 +18,7 @@ class DAPIClient {
     this.MNDiscovery = new MNDiscovery(options.seeds, options.port);
     this.DAPIPort = options.port || config.Api.port;
     this.timeout = options.timeout || 2000;
-    this.testNodes = options.testNodes;
+    this.testNodes = options.seeds;
     preconditionsUtil.checkArgument(jsutil.isUnsignedInteger(this.timeout),
       'Expect timeout to be an unsigned integer');
     this.retries = options.retries ? options.retries : 3;
