@@ -34,11 +34,11 @@ class MNDiscovery {
   /**
    * @returns {Promise<SimplifiedMNListEntry>}
    */
-  async getRandomMasternode(options) {
-    let MNList = Array.isArray(options.testNodes)
-      ? options.testNodes : await this.masternodeListProvider.getMNList();
-    if (Array.isArray(options.excludedIps)) {
-      MNList = MNList.filter(mn => options.excludedIps.indexOf(mn.getIp()) < 0);
+  async getRandomMasternode(testNodes, excludedIps) {
+    let MNList = Array.isArray(testNodes)
+      ? testNodes : await this.masternodeListProvider.getMNList();
+    if (Array.isArray(excludedIps)) {
+      MNList = MNList.filter(mn => excludedIps.indexOf(mn.getIp()) < 0);
     }
     return sample(MNList);
   }

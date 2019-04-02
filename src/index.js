@@ -30,17 +30,19 @@ class DAPIClient {
    * @private
    * @param method
    * @param params
-   * @param {Object} options
+   * @param {string[]} [excludedIps] - excluded ips
    * @returns {Promise<*>}
    */
-  async makeRequestToRandomDAPINode(method, params, options) {
+  async makeRequestToRandomDAPINode(method, params, excludedIps = []) {
     this.makeRequest.callCount = 0;
-    return this.makeRequestWithRetries(method, params, options, this.retries);
+    return this.makeRequestWithRetries(method, params, this.retries, excludedIps);
   }
 
-  async makeRequest(method, params, options) {
+  async makeRequest(method, params, excludedIps) {
     this.makeRequest.callCount += 1;
-    const randomMasternode = await this.MNDiscovery.getRandomMasternode(options);
+    const randomMasternode = await this.MNDiscovery.getRandomMasternode(
+      this.testNodes, excludedIps,
+    );
     return rpcClient.request({
       host: randomMasternode.service.split(':')[0],
       port: this.DAPIPort,
@@ -51,12 +53,12 @@ class DAPIClient {
    * @private
    * @param method
    * @param params
-   * @param {Object} options
+   * @param {string[]} [excludedIps] - excluded ips
    * @param {number} retriesCount
    */
-  async makeRequestWithRetries(method, params, options, retriesCount = 0) {
+  async makeRequestWithRetries(method, params, retriesCount = 0, excludedIps) {
     try {
-      return await this.makeRequest(method, params, options);
+      return await this.makeRequest(method, params, excludedIps);
     } catch (err) {
       if (err.code !== 'ECONNABORTED' && err.code !== 'ECONNREFUSED') {
         throw new Error(`DAPI RPC error: ${method}: ${err}`);
@@ -64,15 +66,10 @@ class DAPIClient {
       if (retriesCount > 0) {
         let excludedOnNextTry = [];
         if (err.address) {
-          excludedOnNextTry = Array.isArray(options.excludedIps)
-            ? options.excludedIps.slice().push(err.address) : excludedOnNextTry.push(err.address);
+          excludedOnNextTry = Array.isArray(excludedIps)
+            ? excludedIps.slice().push(err.address) : excludedOnNextTry.push(err.address);
         }
-        return this.makeRequestWithRetries(
-          method, params, {
-            excludedIps: excludedOnNextTry,
-            testNodes: this.testNodes,
-          }, retriesCount - 1,
-        );
+        return this.makeRequestWithRetries(method, params, retriesCount - 1, excludedOnNextTry);
       }
       throw new Error('max retries to connect to DAPI node reached');
     }
