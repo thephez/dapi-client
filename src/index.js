@@ -144,7 +144,7 @@ class DAPIClient {
    * @param {string[]} excludedIps
    * @returns {Promise<number>}
    */
-  getBestBlockHeight(excludedIps) { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}, excludedIps); }
+  getBestBlockHeight(excludedIps = []) { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}, excludedIps); }
 
   /**
    * Returns block hash for the given height
@@ -152,7 +152,7 @@ class DAPIClient {
    * @param {string[]} excludedIps
    * @returns {Promise<string>} - block hash
    */
-  getBlockHash(height, excludedIps) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }, excludedIps); }
+  getBlockHash(height, excludedIps = []) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }, excludedIps); }
 
   /**
    * Returns block header by hash
@@ -160,7 +160,7 @@ class DAPIClient {
    * @param {string[]} excludedIps
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeader(blockHash, excludedIps) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }, excludedIps); }
+  getBlockHeader(blockHash, excludedIps = []) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }, excludedIps); }
 
   /**
    * Returns block headers from [offset] with length [limit], where limit is <= 25
@@ -169,7 +169,7 @@ class DAPIClient {
    * @param {string[]} excludedIps
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeaders(offset, limit, excludedIps) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }, excludedIps); }
+  getBlockHeaders(offset, limit, excludedIps = []) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }, excludedIps); }
 
   // TODO: Do we really need it this way?
   /**
