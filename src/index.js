@@ -12,12 +12,13 @@ class DAPIClient {
    * @param {number} [options.port] - default port for connection to the DAPI
    * @param {number} [options.timeout] - timeout for connection to the DAPI
    * @param {number} [options.retries] - num of retries if there is no response from DAPI node
+   * @param {number} [options.testNodes] - ip array of test nodes
    */
   constructor(options = {}) {
     this.MNDiscovery = new MNDiscovery(options.seeds, options.port);
     this.DAPIPort = options.port || config.Api.port;
     this.timeout = options.timeout || 2000;
-    this.excludedIps = options.excludedIps;
+    this.testNodes = options.testNodes;
     preconditionsUtil.checkArgument(jsutil.isUnsignedInteger(this.timeout),
       'Expect timeout to be an unsigned integer');
     this.retries = options.retries ? options.retries : 3;
@@ -29,26 +30,33 @@ class DAPIClient {
    * @private
    * @param method
    * @param params
-   * @param {[string[]]} excludedIps
+   * @param {Object} options
    * @returns {Promise<*>}
    */
-  async makeRequestToRandomDAPINode(method, params, excludedIps) {
+  async makeRequestToRandomDAPINode(method, params, options) {
     this.makeRequest.callCount = 0;
-    return this.makeRequestWithRetries(method, params, this.retries, excludedIps);
+    return this.makeRequestWithRetries(method, params, options, this.retries);
   }
 
-  async makeRequest(method, params, excludedIps) {
+  async makeRequest(method, params, options) {
     this.makeRequest.callCount += 1;
-    const randomMasternode = await this.MNDiscovery.getRandomMasternode(excludedIps);
+    const randomMasternode = await this.MNDiscovery.getRandomMasternode(options);
     return rpcClient.request({
       host: randomMasternode.service.split(':')[0],
       port: this.DAPIPort,
     }, method, params, { timeout: this.timeout });
   }
 
-  async makeRequestWithRetries(method, params, retriesCount = 0, excludedIps) {
+  /**
+   * @private
+   * @param method
+   * @param params
+   * @param {Object} options
+   * @param {number} retriesCount
+   */
+  async makeRequestWithRetries(method, params, options, retriesCount = 0) {
     try {
-      return await this.makeRequest(method, params, excludedIps);
+      return await this.makeRequest(method, params, options);
     } catch (err) {
       if (err.code !== 'ECONNABORTED' && err.code !== 'ECONNREFUSED') {
         throw new Error(`DAPI RPC error: ${method}: ${err}`);
@@ -56,10 +64,15 @@ class DAPIClient {
       if (retriesCount > 0) {
         let excludedOnNextTry = [];
         if (err.address) {
-          excludedOnNextTry = excludedIps
-            ? excludedIps.slice().push(err.address) : excludedOnNextTry.push(err.address);
+          excludedOnNextTry = Array.isArray(options.excludedIps)
+            ? options.excludedIps.slice().push(err.address) : excludedOnNextTry.push(err.address);
         }
-        return this.makeRequestWithRetries(method, params, retriesCount - 1, excludedOnNextTry);
+        return this.makeRequestWithRetries(
+          method, params, {
+            excludedIps: excludedOnNextTry,
+            testNodes: this.testNodes,
+          }, retriesCount - 1,
+        );
       }
       throw new Error('max retries to connect to DAPI node reached');
     }
@@ -127,27 +140,27 @@ class DAPIClient {
    * Returns block hash of chaintip
    * @returns {Promise<string>}
    */
-  getBestBlockHash() { return this.makeRequestToRandomDAPINode('getBestBlockHash', {}, this.excludedIps); }
+  getBestBlockHash() { return this.makeRequestToRandomDAPINode('getBestBlockHash', {}, { testNodeIps: this.testNodeIps }); }
 
   /**
    * Returns best block height
    * @returns {Promise<number>}
    */
-  getBestBlockHeight() { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}, this.excludedIps); }
+  getBestBlockHeight() { return this.makeRequestToRandomDAPINode('getBestBlockHeight', {}, { testNodeIps: this.testNodeIps }); }
 
   /**
    * Returns block hash for the given height
    * @param {number} height
    * @returns {Promise<string>} - block hash
    */
-  getBlockHash(height) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }, this.excludedIps); }
+  getBlockHash(height) { return this.makeRequestToRandomDAPINode('getBlockHash', { height }, { testNodeIps: this.testNodeIps }); }
 
   /**
    * Returns block header by hash
    * @param {string} blockHash
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeader(blockHash) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }, this.excludedIps); }
+  getBlockHeader(blockHash) { return this.makeRequestToRandomDAPINode('getBlockHeader', { blockHash }, { testNodeIps: this.testNodeIps }); }
 
   /**
    * Returns block headers from [offset] with length [limit], where limit is <= 25
@@ -155,7 +168,7 @@ class DAPIClient {
    * @param {number} limit
    * @returns {Promise<[objects]>} - array of header objects
    */
-  getBlockHeaders(offset, limit) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }, this.excludedIps); }
+  getBlockHeaders(offset, limit) { return this.makeRequestToRandomDAPINode('getBlockHeaders', { offset, limit }, { testNodeIps: this.testNodeIps }); }
 
   // TODO: Do we really need it this way?
   /**
