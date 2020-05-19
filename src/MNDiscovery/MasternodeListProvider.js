@@ -3,6 +3,7 @@
  * No need to use this module manually - it's part of MNDiscovery.
  * It is written as class for testability purposes - there is need to be a way to
  * reset internal state of object.
+ *
  * @module MasternodeListProvider
  */
 
@@ -21,6 +22,7 @@ const dummyHeader = '00000020306754be5d6e242258b1ab03999eaa847724718cd410c69a0a9
 
 /**
  * validates proof params of cbTxMerkleTree
+ *
  * @param {SimplifiedMNListDiff} diff - masternode list diff
  * @param {string} header - block hash of the ending block of the diff request
  * @returns {boolean}
@@ -39,6 +41,7 @@ function isValidDiffListProof(diff, header) {
 
 /**
  * verifies masternode list diff against local header chain
+ *
  * @param {string} blockHash
  * @returns {Promise<BlockHeader>}
  */
@@ -57,6 +60,7 @@ async function getHeaderFromLocalChain(blockHash) { // eslint-disable-line no-un
 
 /**
  * validates masternode list diff against local header chain and merkle proof
+ *
  * @param {SimplifiedMNListDiff} diff - masternode list diff
  * @returns {Promise<boolean>}
  */
@@ -80,6 +84,7 @@ async function validateDiff(diff) { // eslint-disable-line no-unused-vars
  * and updates it when getMNList() is called after
  * a certain interval has passed. NB: getMNList() returns
  * an array of only valid simplified MN entries and not the entire list.
+ *
  * @type {SimplifiedMNListEntry[]}
  * @property {string} proRegTxHash
  * @property {string} confirmedHash
@@ -102,6 +107,7 @@ class MasternodeListProvider {
     this.seeds = seedsIsArray ? seeds.slice() : config.DAPIDNSSeeds.slice();
     /**
      * Deterministic simplified masternode list.
+     *
      * @type Array<SimplifiedMNListEntry>
      */
     this.masternodeList = [];
@@ -203,6 +209,7 @@ class MasternodeListProvider {
 
   /**
    * Returns simplified masternode list
+   *
    * @returns {Promise<Array<SimplifiedMNListEntry>>}
    */
   async getMNList() {
