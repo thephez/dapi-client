@@ -1,6 +1,7 @@
 /**
  * This module syncs the header chain
  * No need to use this module manually - it's part of HeaderChainSync.
+ *
  * @module HeaderChainProvider
  */
 const { SpvChain } = require('@dashevo/dash-spv');
@@ -31,8 +32,8 @@ class HeaderChainProvider {
    *
    * @param {SpvChain} headerChain
    * @param {HeaderChainChunk} headerChainChunk
-   * @param {int} [retryCount = 5]
-   *
+   * @param retryCount
+   * @param {int} [retryCount= 5]
    * @returns {Promise<void>}
    */
   async populateHeaderChain(
@@ -78,8 +79,7 @@ class HeaderChainProvider {
    * Build the header chain for a specified slice
    *
    * @param {int} fromHeight
-
-   * @return {Promise<SpvChain>}
+   * @returns {Promise<SpvChain>}
    */
   async buildHeaderChain(fromHeight) {
     const fromBlockHash = await this.api.getBlockHash(fromHeight);
@@ -129,8 +129,9 @@ class HeaderChainProvider {
 
   /**
    * Returns simplified header chain from lastChainTipHeight to current chain tip
+   *
    * @param {number} lastChainTipHeight - height of the last header stored
-   * @returns {Promise<Array<Object>>}
+   * @returns {Promise<Array<object>>}
    */
   async fetch(lastChainTipHeight) {
     const headerChain = await this.buildHeaderChain(lastChainTipHeight);
