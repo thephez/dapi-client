@@ -32,8 +32,7 @@ class HeaderChainProvider {
    *
    * @param {SpvChain} headerChain
    * @param {HeaderChainChunk} headerChainChunk
-   * @param retryCount
-   * @param {int} [retryCount= 5]
+   * @param {int} [retryCount=5]
    * @returns {Promise<void>}
    */
   async populateHeaderChain(
