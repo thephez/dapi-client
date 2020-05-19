@@ -10,8 +10,11 @@
         - [`.getBestBlockHash()`](usage/payment/getBestBlockHash.md)
         - [`.getBlockHash()`](usage/payment/getBlockHash.md)
         - [`.getUTXO()`](usage/payment/getUTXO.md)
-   - Utilitaries
+   - Utilities
         - [`.getGrpcUrl()`](usage/utils/getGrpcUrl.md)
         - [`.getMnListDiff()`](usage/utils/getMnListDiff.md)
         - [`.subscribeToTransactionsWithProofs()`](usage/utils/subscribeToTransactionsWithProofs.md)
+
+- API
+    - [documentation.js](api.md)
 - [License](https://github.com/dashevo/dapi-client/blob/master/LICENSE)
