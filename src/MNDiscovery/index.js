@@ -9,13 +9,13 @@
 const sample = require('lodash/sample');
 const MasternodeListProvider = require('./MasternodeListProvider');
 
+/**
+ * @class
+ * @param {Array} [seeds] - optional. Seeds to use. If nothing passed, default seeds will be used.
+ * Default will be fine in most of situations.
+ * @param {number} [port] - optional. Default port for connection to the DAPI
+ */
 class MNDiscovery {
-  /**
-   * @class
-   * @param {Array} [seeds] - optional. Seeds to use. If nothing passed, default seeds will be used.
-   * Default will be fine in most of situations.
-   * @param {number} [port] - optional. Default port for connection to the DAPI
-   */
   constructor(seeds, port) {
     /**
      * @private

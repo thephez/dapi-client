@@ -24,16 +24,16 @@ const rpcClient = require('./RPCClient');
 const config = require('./config');
 const { responseErrorCodes } = require('./constants');
 
+/**
+ * @param options
+ * @param {Array<object>} [options.seeds] - seeds. If no seeds provided
+ * default seed will be used.
+ * @param {number} [options.port=3000] - default port for connection to the DAPI
+ * @param {number} [options.nativeGrpcPort=3010] - Native GRPC port for connection to the DAPI
+ * @param {number} [options.timeout=2000] - timeout for connection to the DAPI
+ * @param {number} [options.retries=3] - num of retries if there is no response from DAPI node
+ */
 class DAPIClient {
-  /**
-   * @param options
-   * @param {Array<object>} [options.seeds] - seeds. If no seeds provided
-   * default seed will be used.
-   * @param {number} [options.port=3000] - default port for connection to the DAPI
-   * @param {number} [options.nativeGrpcPort=3010] - Native GRPC port for connection to the DAPI
-   * @param {number} [options.timeout=2000] - timeout for connection to the DAPI
-   * @param {number} [options.retries=3] - num of retries if there is no response from DAPI node
-   */
   constructor(options = {}) {
     this.MNDiscovery = new MNDiscovery(options.seeds, options.port);
     this.DAPIPort = options.port || config.Api.port;
